@@ -8,7 +8,12 @@ const Button = ({ onClick, text }) => (
   </button>
 );
 
-const StatisticLine = ({ name, value }) => <p>{`${name} ${value}`}</p>;
+const StatisticLine = ({ name, value }) => (
+  <tr>
+    <th scope="row">{name}</th>
+    <td>{value}</td>
+  </tr>
+);
 
 const Statistics = ({ good, neutral, bad }) => {
   const allFeedbackCount = good + neutral + bad;
@@ -22,14 +27,16 @@ const Statistics = ({ good, neutral, bad }) => {
   if (!allFeedbackCount) return <p>No feedback given</p>;
 
   return (
-    <>
-      <StatisticLine name="good" value={good} />
-      <StatisticLine name="neutral" value={neutral} />
-      <StatisticLine name="bad" value={bad} />
-      <StatisticLine name="all" value={allFeedbackCount} />
-      <StatisticLine name="average" value={average} />
-      <StatisticLine name="positive" value={positivePercentage} />
-    </>
+    <table>
+      <tbody>
+        <StatisticLine name="good" value={good} />
+        <StatisticLine name="neutral" value={neutral} />
+        <StatisticLine name="bad" value={bad} />
+        <StatisticLine name="all" value={allFeedbackCount} />
+        <StatisticLine name="average" value={average} />
+        <StatisticLine name="positive" value={positivePercentage} />
+      </tbody>
+    </table>
   );
 };
 
