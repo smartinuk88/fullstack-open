@@ -8,6 +8,8 @@ const Button = ({ onClick, text }) => (
   </button>
 );
 
+const Statistic = ({ name, value }) => <p>{`${name} ${value}`}</p>;
+
 const Statistics = ({ good, neutral, bad }) => {
   const allFeedbackCount = good + neutral + bad;
   const average = allFeedbackCount
@@ -16,6 +18,8 @@ const Statistics = ({ good, neutral, bad }) => {
   const positivePercentage = allFeedbackCount
     ? `${((good / allFeedbackCount) * 100).toFixed(2)} %`
     : "0 %";
+
+  if (!allFeedbackCount) return <p>No feedback given</p>;
 
   return (
     <>
@@ -28,8 +32,6 @@ const Statistics = ({ good, neutral, bad }) => {
     </>
   );
 };
-
-const Statistic = ({ name, value }) => <p>{`${name} ${value}`}</p>;
 
 const App = () => {
   // save clicks of each button to its own state
