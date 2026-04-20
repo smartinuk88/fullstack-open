@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import personsService from "./services/persons";
 import SearchFilter from "./components/SearchFilter";
 import AddPersonForm from "./components/AddPersonForm";
 import PersonsList from "./components/PersonsList";
@@ -11,9 +11,15 @@ const App = () => {
   const [searchTerm, setNewSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((res) => {
-      setPersons(res.data);
-    });
+    personsService
+      .getAll()
+      .then((returnedPersons) => {
+        setPersons(returnedPersons);
+      })
+      .catch((error) => {
+        console.log(`Error fetching persons: ${error}`);
+        alert("Error fetching persons");
+      });
   }, []);
 
   const filteredPersons = persons.filter((person) =>
@@ -32,9 +38,17 @@ const App = () => {
       return;
     }
 
-    setPersons(persons.concat(personObj));
-    setNewName("");
-    setNewTelNumber("");
+    personsService
+      .create(personObj)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewTelNumber("");
+      })
+      .catch((error) => {
+        console.error(`Error adding ${newName} to server: ${error}`);
+        alert(`Error adding ${newName}`);
+      });
   };
 
   return (
