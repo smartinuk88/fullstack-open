@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import SearchFilter from "./components/SearchFilter";
+import AddPersonForm from "./components/AddPersonForm";
+import PersonsList from "./components/PersonsList";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -35,47 +38,20 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        <label htmlFor="search">filter shown with</label>
-        <input
-          id="search"
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setNewSearchTerm(e.target.value)}
-        />
-      </div>
+      <SearchFilter
+        onChange={(e) => setNewSearchTerm(e.target.value)}
+        searchTerm={searchTerm}
+      />
       <h2>Add a new</h2>
-      <form onSubmit={handleAddPerson}>
-        <div>
-          <label htmlFor="name">name: </label>
-          <input
-            id="name"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="number">number: </label>
-          <input
-            id="number"
-            type="tel"
-            value={newTelNumber}
-            onChange={(e) => setNewTelNumber(e.target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <AddPersonForm
+        onChangeName={(e) => setNewName(e.target.value)}
+        onChangeNumber={(e) => setNewTelNumber(e.target.value)}
+        newName={newName}
+        newTelNumber={newTelNumber}
+        onSubmit={handleAddPerson}
+      />
       <h2>Numbers</h2>
-      <div>
-        {filteredPersons.map((person) => (
-          <React.Fragment key={person.name}>
-            <p>{person.name}</p>
-            <p>{person.number}</p>
-          </React.Fragment>
-        ))}
-      </div>
+      <PersonsList persons={filteredPersons} />
     </div>
   );
 };
