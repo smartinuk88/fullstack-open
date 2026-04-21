@@ -1,13 +1,19 @@
 import React from "react";
 
-function PersonsList({ persons }) {
+function PersonsList({ persons, onDelete }) {
   return (
     <div>
       {persons.map((person) => (
-        <React.Fragment key={person.id}>
-          <p>{person.name}</p>
-          <p>{person.number}</p>
-        </React.Fragment>
+        <p key={person.id}>
+          <span>{person.name} </span>
+
+          <span>{person.number} </span>
+          <span>
+            <button type="button" onClick={() => onDelete(person)}>
+              delete
+            </button>
+          </span>
+        </p>
       ))}
     </div>
   );

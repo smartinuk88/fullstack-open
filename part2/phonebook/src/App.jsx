@@ -44,11 +44,25 @@ const App = () => {
         setPersons(persons.concat(returnedPerson));
         setNewName("");
         setNewTelNumber("");
+        console.log(returnedPerson);
       })
       .catch((error) => {
         console.error(`Error adding ${newName} to server: ${error}`);
         alert(`Error adding ${newName}`);
       });
+  };
+
+  const handleDeletePerson = (person) => {
+    console.log(person);
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personsService
+        .deletePerson(person.id)
+        .then(() => setPersons(persons.filter((p) => p.id !== person.id)))
+        .catch((error) => {
+          console.log(`Error deleting ${person.name}: ${error}`);
+          alert(`Error deleting ${person.name}. Please try again`);
+        });
+    }
   };
 
   return (
@@ -67,7 +81,7 @@ const App = () => {
         onSubmit={handleAddPerson}
       />
       <h2>Numbers</h2>
-      <PersonsList persons={filteredPersons} />
+      <PersonsList persons={filteredPersons} onDelete={handleDeletePerson} />
     </div>
   );
 };
