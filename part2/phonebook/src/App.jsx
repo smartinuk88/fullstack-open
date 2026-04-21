@@ -9,6 +9,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newTelNumber, setNewTelNumber] = useState("");
   const [searchTerm, setNewSearchTerm] = useState("");
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personsService
@@ -43,16 +44,17 @@ const App = () => {
       ) {
         personsService
           .update(existingPerson.id, personObj)
-          .then(
-            (returnedPerson) =>
-              setPersons(
-                persons.map((p) =>
-                  p.id === returnedPerson.id ? returnedPerson : p,
-                ),
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((p) =>
+                p.id === returnedPerson.id ? returnedPerson : p,
               ),
-            setNewName(""),
-            setNewTelNumber(""),
-          )
+            );
+            setNotification(`Updated ${personObj.name}`);
+            setTimeout(() => setNotification(null), 3000);
+            setNewName("");
+            setNewTelNumber("");
+          })
           .catch((error) => {
             console.error(`Error updating ${newName}: ${error}`);
             alert(`Error updating ${newName}`);
@@ -65,6 +67,8 @@ const App = () => {
       .create(personObj)
       .then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        setNotification(`Added ${personObj.name}`);
+        setTimeout(() => setNotification(null), 3000);
         setNewName("");
         setNewTelNumber("");
       })
@@ -89,6 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {notification && <p className="notification">{notification}</p>}
       <SearchFilter
         onChange={(e) => setNewSearchTerm(e.target.value)}
         searchTerm={searchTerm}
