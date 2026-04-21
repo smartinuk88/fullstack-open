@@ -33,8 +33,31 @@ const App = () => {
       number: newTelNumber,
     };
 
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const existingPerson = persons.find((person) => person.name === newName);
+
+    if (existingPerson) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`,
+        )
+      ) {
+        personsService
+          .update(existingPerson.id, personObj)
+          .then(
+            (returnedPerson) =>
+              setPersons(
+                persons.map((p) =>
+                  p.id === returnedPerson.id ? returnedPerson : p,
+                ),
+              ),
+            setNewName(""),
+            setNewTelNumber(""),
+          )
+          .catch((error) => {
+            console.error(`Error updating ${newName}: ${error}`);
+            alert(`Error updating ${newName}`);
+          });
+      }
       return;
     }
 
@@ -44,7 +67,6 @@ const App = () => {
         setPersons(persons.concat(returnedPerson));
         setNewName("");
         setNewTelNumber("");
-        console.log(returnedPerson);
       })
       .catch((error) => {
         console.error(`Error adding ${newName} to server: ${error}`);
@@ -53,7 +75,6 @@ const App = () => {
   };
 
   const handleDeletePerson = (person) => {
-    console.log(person);
     if (window.confirm(`Delete ${person.name}?`)) {
       personsService
         .deletePerson(person.id)
