@@ -27,6 +27,11 @@ const App = () => {
     person.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  const notify = (type, message) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
   const handleAddPerson = (e) => {
     e.preventDefault();
     const personObj = {
@@ -50,14 +55,13 @@ const App = () => {
                 p.id === returnedPerson.id ? returnedPerson : p,
               ),
             );
-            setNotification(`Updated ${personObj.name}`);
-            setTimeout(() => setNotification(null), 3000);
+            notify("success", `Updated ${personObj.name}`);
             setNewName("");
             setNewTelNumber("");
           })
           .catch((error) => {
             console.error(`Error updating ${newName}: ${error}`);
-            alert(`Error updating ${newName}`);
+            notify("error", `Error updating ${personObj.name}`);
           });
       }
       return;
@@ -67,14 +71,13 @@ const App = () => {
       .create(personObj)
       .then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
-        setNotification(`Added ${personObj.name}`);
-        setTimeout(() => setNotification(null), 3000);
+        notify("success", `Added ${personObj.name}`);
         setNewName("");
         setNewTelNumber("");
       })
       .catch((error) => {
         console.error(`Error adding ${newName} to server: ${error}`);
-        alert(`Error adding ${newName}`);
+        notify("error", `Error adding ${personObj.name}`);
       });
   };
 
@@ -82,10 +85,13 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personsService
         .deletePerson(person.id)
-        .then(() => setPersons(persons.filter((p) => p.id !== person.id)))
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== person.id));
+          notify("success", `Deleted ${person.name}`);
+        })
         .catch((error) => {
           console.log(`Error deleting ${person.name}: ${error}`);
-          alert(`Error deleting ${person.name}. Please try again`);
+          notify("error", `Error deleting ${person.name}`);
         });
     }
   };
@@ -93,7 +99,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {notification && <p className="notification">{notification}</p>}
+      {notification && (
+        <p
+          className={`notification ${notification.type === "success" ? "success" : "error"}`}
+        >
+          {notification.message}
+        </p>
+      )}
       <SearchFilter
         onChange={(e) => setNewSearchTerm(e.target.value)}
         searchTerm={searchTerm}
