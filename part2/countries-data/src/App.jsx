@@ -5,6 +5,7 @@ import Country from "./components/Country";
 function App() {
   const [search, setSearch] = useState("");
   const [countries, setCountries] = useState([]);
+  const [previewCountry, setPreviewCountry] = useState(null);
 
   useEffect(() => {
     axios
@@ -16,6 +17,12 @@ function App() {
         console.log(`Error fetching countries: ${error}`);
       });
   }, []);
+
+  const handleTogglePreview = (country) => {
+    setPreviewCountry(
+      previewCountry?.name.common === country.name.common ? null : country,
+    );
+  };
 
   const filteredCountries = countries.filter(
     (country) =>
@@ -41,13 +48,27 @@ function App() {
 
         {search &&
           filteredCountries.length <= 10 &&
-          filteredCountries.length > 1 &&
-          filteredCountries.map((country) => (
-            <p key={country.name.official}>{country.name.common}</p>
-          ))}
+          filteredCountries.length > 1 && (
+            <ul>
+              {filteredCountries.map((country) => (
+                <li key={country.name.official}>
+                  {country.name.common}{" "}
+                  <button onClick={() => handleTogglePreview(country)}>
+                    {previewCountry?.name.common === country.name.common
+                      ? "Hide"
+                      : "Show"}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
 
         {search && filteredCountries.length === 1 && (
           <Country country={filteredCountries[0]} />
+        )}
+
+        {filteredCountries.length !== 1 && previewCountry && (
+          <Country country={previewCountry} />
         )}
       </div>
     </div>
