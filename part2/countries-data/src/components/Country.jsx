@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 function Country({ country }) {
   const [weatherData, setWeatherData] = useState(null);
-  console.log(country);
 
   useEffect(() => {
     axios
